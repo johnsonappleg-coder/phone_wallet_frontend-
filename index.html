@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Auth Wallet</title>
+</head>
+<body>
+    <h1>Backend Status</h1>
+    <div id="status">Checking connection...</div>
+
+    <script>
+        const API_URL = "https://phone-auth-wallet-backend.onrender.com";
+
+        async function checkBackend() {
+            const statusDiv = document.getElementById('status');
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                statusDiv.innerText = "Success: " + JSON.stringify(data);
+            } catch (error) {
+                statusDiv.innerText = "Error connecting to backend: " + error.message;
+            }
+        }
+
+        checkBackend();
+    </script>
+</body>
+</html>
