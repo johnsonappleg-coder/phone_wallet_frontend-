@@ -14,12 +14,33 @@
 
         async function checkBackend() {
             const statusDiv = document.getElementById('status');
+            statusDiv.textContent = 'Checking connection...';
+
             try {
-                const response = await fetch(`${API_URL}/health`);
-                const data = await response.json();
-                statusDiv.innerText = "Success: " + JSON.stringify(data);
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    mode: 'cors',
+                    cache: 'no-store',
+                });
+
+                const text = await response.text();
+                let data = null;
+
+                try {
+                    data = text ? JSON.parse(text) : null;
+                } catch {
+                    data = { raw: text };
+                }
+
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP ${response.status}: ${response.statusText}${data && data.message ? ` - ${data.message}` : ''}`
+                    );
+                }
+
+                statusDiv.innerText = 'Success: ' + JSON.stringify(data ?? { status: 'ok' });
             } catch (error) {
-                statusDiv.innerText = "Error connecting to backend: " + error.message;
+                statusDiv.innerText = 'Error connecting to backend: ' + error.message;
             }
         }
 
